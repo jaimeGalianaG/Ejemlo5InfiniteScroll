@@ -65,6 +65,13 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoVH> {
                 confirmUpdate("¿SEGURO QUE QUIERES CAMBIAR?", toDo).show();
             }
         });
+
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmDelete("¿SEGURO QUE QUIERES ELIMINAR?", holder.getAdapterPosition()).show();
+            }
+        });
     }
 
     @Override
@@ -89,10 +96,26 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoVH> {
 
         return builder.create();
     }
+    private AlertDialog confirmDelete(String titulo, int posicion) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+
+        builder.setTitle(titulo);
+        builder.setCancelable(false);
+
+        builder.setNegativeButton("NO", null);
+        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                objects.remove(posicion);
+                notifyItemRemoved(posicion);
+            }
+        });
+        return builder.create();
+    }
 
     public class ToDoVH extends RecyclerView.ViewHolder {
         TextView lbTitulo, lbContenido, lbFecha;
-        ImageButton btnCompletado;
+        ImageButton btnCompletado, btnDelete;
 
         public ToDoVH(@NonNull View itemView) {
             super(itemView);
@@ -101,6 +124,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoVH> {
             lbContenido = itemView.findViewById(R.id.lbContenidoToDoViewModel);
             lbFecha = itemView.findViewById(R.id.lbFechaToDoViewModel);
             btnCompletado = itemView.findViewById(R.id.btnCompletadoToDoViewModel);
+            btnDelete = itemView.findViewById(R.id.btnDeleteTodoViewModel);
         }
     }
 }
